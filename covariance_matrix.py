@@ -68,12 +68,12 @@ class MotiveSystem:
     def __init__(
         self,
         initial_values,
-        decay_rate=0.05,
+        decay_rate=0.005,
         growth_rate=0.3,
         max_satisfaction=1.0,
-        covariance_amplitude=0.5,
-        covariance_elevation=0.0,
-        covariance_strength=0.02,
+        covariance_amplitude=18,
+        covariance_elevation=0.2,
+        covariance_strength=0.3,
     ):
         """
         Initialize motive system with sinusoidal covariance
@@ -210,9 +210,9 @@ if __name__ == "__main__":
         decay_rate=0.05,
         growth_rate=0.3,
         max_satisfaction=1.0,
-        covariance_amplitude=1,  # Strong covariance effect
-        covariance_elevation=0,  # Slight positive baseline
-        covariance_strength=0.03,  # Moderate influence on satisfaction changes
+        covariance_amplitude=0.3,  # Strong covariance effect
+        covariance_elevation=0.1,  # Slight positive baseline
+        covariance_strength=0.05,  # Moderate influence on satisfaction changes
     )
 
     print("Initial motive levels:", motive_system.motives.round(3))
