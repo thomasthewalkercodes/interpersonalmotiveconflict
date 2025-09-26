@@ -2,14 +2,14 @@
 # calculate it.
 import numpy as np
 
-np.random.seed(42)
+# np.random.seed(42)
 n = 8
-num_matrices = 100
+num_matrices = 1
 mu_values = np.linspace(-0.1, 0.2, num_matrices)  # Fixed typo: linspace not linespace
 sigma = 0.1
 
 
-def create_symmetric_matrix(n, mu=0, sigma=1):
+def create_symmetric_matrix(n, mu=0.5, sigma=1):
     mat = np.zeros((n, n))
     # generate upper triangular matrix
     upper_indices = np.triu_indices(n, k=1)
@@ -149,7 +149,7 @@ class MotiveSystem:
             self.motives[self.active_motive] += self.growth_rate
 
             # Check if active motive reached max satisfaction
-            if self.motives[self.active_motive] >= self.max_satisfaction:
+            if self.motives[self.active_motive] >= 1:
                 self.active_motive = None  # Deactivate it
 
         # Step 3: If no active motive, choose a dissatisfied one
@@ -198,8 +198,15 @@ class MotiveSystem:
         print(f"  Elevation: {self.covariance_elevation}")
         print(f"  Strength: {self.covariance_strength}")
 
+    def update_covariance_matrix(self):
+        """Recreate the covariance matrix with current amplitude and elevation."""
+        self.covariance_matrix = create_sinusoidal_covariance_matrix(
+            n_octants=len(self.motives),
+            amplitude=self.covariance_amplitude,
+            elevation=self.covariance_elevation,
+        )
 
-# Example usage
+
 if __name__ == "__main__":
     # Create initial motive values
     initial_motives = np.random.normal(0, 0.5, 8)
@@ -207,10 +214,10 @@ if __name__ == "__main__":
     # Create motive system with covariance
     motive_system = MotiveSystem(
         initial_motives,
-        decay_rate=0.05,
+        decay_rate=0.005,
         growth_rate=0.3,
         max_satisfaction=1.0,
-        covariance_amplitude=0.3,  # Strong covariance effect
+        covariance_amplitude=0.9,  # Strong covariance effect
         covariance_elevation=0.1,  # Slight positive baseline
         covariance_strength=0.05,  # Moderate influence on satisfaction changes
     )
