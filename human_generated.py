@@ -5,9 +5,11 @@ My interpretation of how this motive conflict model could be implemented in code
 import numpy as np
 import random
 import pandas as pd
+from cosinus_corr_matrix import create_circumplex_correlation_matrix
 
-steps = 100
-influence_multiplier = 0.03
+
+steps = 300
+influence_multiplier = 0.02
 growth_rate = 1
 
 
@@ -55,9 +57,18 @@ hijk = df_influence_of_octants.loc["HI", "JK"] = -0.3
 df_influence_of_octants = df_influence_of_octants + df_influence_of_octants.T
 print(df_influence_of_octants)
 
+df_influence_of_octants = create_circumplex_correlation_matrix(
+    n_motives=8,
+    elevation=-0.01,
+    amplitude=0.3,
+    displacement=0,  # displacement in degrees, how much the curve shifts towards a different point
+).round(3)
+
+print(df_influence_of_octants)
+
 octants = ["LM", "NO", "AP", "BC", "DE", "FG", "HI", "JK"]
 df_satisfaction = pd.DataFrame(
-    np.clip(np.random.normal(0.5, 0.2, (1, 8)), -1, 1),
+    np.clip(np.random.normal(0.4, 0.4, (1, 8)), -1, 1),
     index=["satisfaction"],
     columns=octants,
 )
@@ -95,6 +106,18 @@ for step in range(steps):
             and df_satisfaction.loc["satisfaction", active_behavior] >= 1
         ):
             active_behavior = None
+            unsatisfied_octants = df_satisfaction.columns[
+                df_satisfaction.loc["satisfaction"] < 0
+            ].tolist()
+            if len(unsatisfied_octants) == 0:
+                active_behavior = None  # checks if something is active
+            elif len(unsatisfied_octants) > 0:
+                # selection based on unsatisfaction level
+                probs = -df_satisfaction.loc["satisfaction", unsatisfied_octants]
+                probs = probs / probs.sum()  # Normalize to sum to 1
+                active_behavior = random.choices(
+                    unsatisfied_octants, weights=probs, k=1
+                )[0]
 
     df_satisfaction = (
         df_satisfaction - (1 - mean_influence) * influence_multiplier
