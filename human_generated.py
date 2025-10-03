@@ -8,7 +8,7 @@ import pandas as pd
 from cosinus_corr_matrix import create_circumplex_correlation_matrix
 
 
-steps = 300
+steps = 150
 influence_multiplier = 0.02
 growth_rate = 1
 
