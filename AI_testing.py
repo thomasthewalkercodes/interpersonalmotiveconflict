@@ -41,7 +41,6 @@ def simulate_motive_system(
     steps=300,
     influence_multiplier=0.03,
     growth_rate=0.2,
-    network_impact=0.05,
 ):
     """
     Simulate motive system and return satisfaction history
@@ -83,7 +82,7 @@ def simulate_motive_system(
             for i in range(n_motives):
                 if i != active_behavior:
                     influence = correlation_matrix[active_behavior, i]
-                    satisfaction[i] += influence * network_impact
+                    satisfaction[i] += influence
 
         satisfaction = np.clip(satisfaction, -1, 1)
 
@@ -266,9 +265,9 @@ def run_comprehensive_test(
     # random.seed(random_seed)
 
     # Define parameter ranges
-    elevation_range = np.linspace(-0.2, 0.5, 10)
+    elevation_range = np.linspace(-0.2, 1, 10)
     amplitude_range = np.linspace(0.1, 0.95, 10)
-    initial_mean_range = np.linspace(-0.5, 0.5, 10)
+    initial_mean_range = np.linspace(-0.2, 0.2, 10)
     initial_std_range = np.linspace(0.1, 0.5, 5)
 
     results = []
