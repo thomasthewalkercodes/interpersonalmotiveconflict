@@ -2,151 +2,173 @@ import numpy as np
 
 
 def generate_motive_matrix(n_motives=8, mean=0.0, sd=0.2, seed=None):
-    """
-    Generate a symmetric congruence matrix for motives.
-
-    Parameters:
-    - n_motives: number of motives (default 8)
-    - mean: mean of the normal distribution (default 0.0)
-    - sd: standard deviation (default 0.2)
-    - seed: random seed for reproducibility
-
-    Returns:
-    - M: symmetric matrix with zeros on diagonal, values clipped to [-1, 1]
-    """
+    """Generate symmetric congruence matrix."""
     if seed is not None:
         np.random.seed(seed)
 
-    # Generate upper triangle from normal distribution
     upper_triangle = np.random.normal(mean, sd, size=(n_motives, n_motives))
-
-    # Make symmetric by mirroring upper triangle to lower
-    M = np.triu(upper_triangle, k=1)  # Upper triangle excluding diagonal
-    M = M + M.T  # Add transpose to make symmetric
-
-    # Clip values to [-1, 1]
+    M = np.triu(upper_triangle, k=1)
+    M = M + M.T
     M = np.clip(M, -1, 1)
-
-    # Ensure diagonal is zero (motive doesn't affect itself)
     np.fill_diagonal(M, 0)
 
     return M
 
 
-def analyze_matrix_stability(M, decay_coef=0.15):
+def analyze_matrix_stability(M, decay_lambda=None):
     """
-    Analyze a congruence matrix for stability/bleeding characteristics.
+    Analyze congruence matrix stability with constant decay λ.
 
     Parameters:
     - M: congruence matrix (symmetric, zero diagonal)
-    - decay_coef: decay coefficient (default 0.15)
+    - decay_lambda: if None, calculates recommended value
 
     Returns:
-    - Dictionary with analysis results
+    - Dictionary with stability analysis
     """
     n_motives = M.shape[0]
 
-    # Calculate row sums (excluding diagonal, which is 0 anyway)
     row_sums = np.sum(M, axis=1)
     mean_row_sum = np.mean(row_sums)
 
-    # Calculate minimum decay coefficient to prevent bleeding
-    decay_coef_min = (1 + mean_row_sum) / (2 * (n_motives - 1))
+    # Calculate equilibrium decay rate
+    lambda_eq = (1 + mean_row_sum) / (n_motives - 1)
 
-    # Calculate bleeding risk with current decay_coef
-    bleeding_risk = (1 + mean_row_sum) / ((n_motives - 1) * decay_coef)
+    # Safe operating range
+    lambda_min = 0.5 * lambda_eq
+    lambda_max = 2.0 * lambda_eq
 
-    # Calculate equilibrium mean satisfaction
-    mean_sat_eq = 1 - (1 + mean_row_sum) / ((n_motives - 1) * decay_coef)
+    # If no lambda provided, use equilibrium value
+    if decay_lambda is None:
+        decay_lambda = lambda_eq
+
+    # Calculate stability ratio
+    stability_ratio = (1 + mean_row_sum) / ((n_motives - 1) * decay_lambda)
 
     # Determine system state
-    if bleeding_risk > 2:
-        state = "BLEEDING - system will crash"
-    elif bleeding_risk > 1.5:
+    if stability_ratio > 2.0:
+        state = "BLEEDING - system crashes to -1"
+        health = "CRITICAL"
+    elif stability_ratio > 1.5:
         state = "UNSTABLE - very low equilibrium"
-    elif bleeding_risk > 1.0:
-        state = "MARGINAL - low equilibrium"
+        health = "POOR"
+    elif stability_ratio > 1.2:
+        state = "LOW EQUILIBRIUM - sustainable but low satisfaction"
+        health = "FAIR"
+    elif stability_ratio > 0.8:
+        state = "HEALTHY EQUILIBRIUM - good balance"
+        health = "GOOD"
+    elif stability_ratio > 0.5:
+        state = "HIGH EQUILIBRIUM - high satisfaction"
+        health = "GOOD"
     else:
-        state = "STABLE - healthy equilibrium"
+        state = "SATURATION RISK - may freeze at +1"
+        health = "CAUTION"
 
     return {
         "n_motives": n_motives,
         "mean_row_sum": mean_row_sum,
         "row_sums": row_sums,
-        "decay_coef": decay_coef,
-        "decay_coef_min": decay_coef_min,
-        "bleeding_risk": bleeding_risk,
-        "mean_sat_eq": mean_sat_eq,
+        "lambda_equilibrium": lambda_eq,
+        "lambda_min_safe": lambda_min,
+        "lambda_max_safe": lambda_max,
+        "lambda_current": decay_lambda,
+        "stability_ratio": stability_ratio,
         "state": state,
+        "health": health,
+        "is_in_safe_range": lambda_min <= decay_lambda <= lambda_max,
     }
 
 
 def print_analysis(analysis):
     """Pretty print the analysis results."""
-    print(f"\n{'='*60}")
+    print(f"\n{'='*70}")
     print(f"MATRIX STABILITY ANALYSIS")
-    print(f"{'='*60}")
-    print(f"Number of motives: {analysis['n_motives']}")
-    print(f"Mean row sum: {analysis['mean_row_sum']:.4f}")
+    print(f"{'='*70}")
+    print(f"Number of motives (N): {analysis['n_motives']}")
+    print(f"Mean row sum of M: {analysis['mean_row_sum']:.4f}")
     print(f"\nRow sums per motive:")
     for i, rs in enumerate(analysis["row_sums"]):
-        print(f"  Motive {i}: {rs:.4f}")
-    print(f"\n{'─'*60}")
-    print(f"Current decay coefficient: {analysis['decay_coef']:.4f}")
-    print(f"Minimum decay coefficient: {analysis['decay_coef_min']:.4f}")
-    print(f"\nBleeding risk: {analysis['bleeding_risk']:.4f}")
-    print(f"  (>2.0 = bleeding, <2.0 = stable)")
-    print(f"\nEquilibrium mean satisfaction: {analysis['mean_sat_eq']:.4f}")
-    print(f"  (range: -1.0 to +1.0)")
+        print(f"  Motive {i}: {rs:+.4f}")
+
+    print(f"\n{'─'*70}")
+    print(f"DECAY PARAMETER (λ) ANALYSIS")
+    print(f"{'─'*70}")
+    print(f"Equilibrium λ:     {analysis['lambda_equilibrium']:.4f} (perfect balance)")
+    print(
+        f"Safe range:        [{analysis['lambda_min_safe']:.4f}, {analysis['lambda_max_safe']:.4f}]"
+    )
+    print(f"Current λ:         {analysis['lambda_current']:.4f}")
+    print(f"In safe range?     {'✓ YES' if analysis['is_in_safe_range'] else '✗ NO'}")
+
+    print(f"\n{'─'*70}")
+    print(f"STABILITY ASSESSMENT")
+    print(f"{'─'*70}")
+    print(f"Stability ratio (R): {analysis['stability_ratio']:.4f}")
+    print(f"  R > 2.0  → Bleeding")
+    print(f"  R ≈ 1.0  → Equilibrium")
+    print(f"  R < 0.5  → Saturation")
     print(f"\nSystem state: {analysis['state']}")
-    print(f"{'='*60}\n")
+    print(f"Health: {analysis['health']}")
+    print(f"{'='*70}\n")
+
+
+def compare_lambda_values(M, lambda_values):
+    """Compare stability across different λ values."""
+    print(f"\n{'='*70}")
+    print(f"COMPARING DIFFERENT λ VALUES")
+    print(f"{'='*70}\n")
+
+    results = []
+    for lam in lambda_values:
+        analysis = analyze_matrix_stability(M, decay_lambda=lam)
+        results.append(analysis)
+        print(
+            f"λ = {lam:.3f} → R = {analysis['stability_ratio']:.3f} → {analysis['health']}"
+        )
+
+    return results
 
 
 # Example usage
 if __name__ == "__main__":
-    # Generate a single matrix
-    print("EXAMPLE 1: Single matrix analysis")
-    M = generate_motive_matrix(n_motives=8, mean=-0.5, sd=0.2, seed=42)
+    print("EXAMPLE 1: Single matrix with recommended λ")
+    M = generate_motive_matrix(n_motives=8, mean=0.0, sd=0.2, seed=1)
 
-    print("\nGenerated Matrix:")
-    print(M)
+    print("\nGenerated Matrix M:")
+    print(M.round(3))
 
-    # Analyze with default decay coefficient
-    analysis = analyze_matrix_stability(M, decay_coef=0.15)
+    # Analyze with recommended λ
+    analysis = analyze_matrix_stability(M)
     print_analysis(analysis)
 
-    # Test with the minimum decay coefficient
-    print("\nTesting with minimum decay coefficient:")
-    analysis_min = analyze_matrix_stability(M, decay_coef=analysis["decay_coef_min"])
-    print_analysis(analysis_min)
+    # Compare different λ values
+    print("\n" + "=" * 70)
+    print("EXAMPLE 2: Testing different λ values")
+    lambda_test = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+    compare_lambda_values(M, lambda_test)
 
-    # Generate multiple matrices and summarize
-    print("\n" + "=" * 60)
-    print("EXAMPLE 2: Multiple matrix generation")
-    print("=" * 60)
+    # Generate multiple matrices and find λ ranges
+    print("\n" + "=" * 70)
+    print("EXAMPLE 3: λ ranges across 20 random matrices")
+    print("=" * 70)
 
     n_samples = 20
-    results = []
+    lambda_eqs = []
+    lambda_mins = []
+    lambda_maxs = []
 
     for i in range(n_samples):
-        M = generate_motive_matrix(n_motives=8, mean=0, sd=0.5)
-        analysis = analyze_matrix_stability(M, decay_coef=0.15)
-        results.append(analysis)
+        M_sample = generate_motive_matrix(n_motives=8, mean=0.0, sd=0.2)
+        analysis = analyze_matrix_stability(M_sample)
+        lambda_eqs.append(analysis["lambda_equilibrium"])
+        lambda_mins.append(analysis["lambda_min_safe"])
+        lambda_maxs.append(analysis["lambda_max_safe"])
 
-    print(f"\nGenerated {n_samples} matrices with mean=0.0, sd=0.2")
-    print(f"\nSummary statistics:")
+    print(f"\nFor matrices with mean=0.0, sd=0.2, N=8:")
+    print(f"  λ_equilibrium range: [{min(lambda_eqs):.4f}, {max(lambda_eqs):.4f}]")
+    print(f"  λ_min_safe range:    [{min(lambda_mins):.4f}, {max(lambda_mins):.4f}]")
+    print(f"  λ_max_safe range:    [{min(lambda_maxs):.4f}, {max(lambda_maxs):.4f}]")
     print(
-        f"  Mean row sum range: [{min(r['mean_row_sum'] for r in results):.4f}, "
-        f"{max(r['mean_row_sum'] for r in results):.4f}]"
+        f"\nRecommended λ for this distribution: {np.mean(lambda_eqs):.4f} ± {np.std(lambda_eqs):.4f}"
     )
-    print(
-        f"  Min decay_coef needed: [{min(r['decay_coef_min'] for r in results):.4f}, "
-        f"{max(r['decay_coef_min'] for r in results):.4f}]"
-    )
-    print(
-        f"  Equilibrium sat range: [{min(r['mean_sat_eq'] for r in results):.4f}, "
-        f"{max(r['mean_sat_eq'] for r in results):.4f}]"
-    )
-
-    stable_count = sum(1 for r in results if r["bleeding_risk"] < 2.0)
-    print(f"\nWith decay_coef=0.15: {stable_count}/{n_samples} matrices are stable")
