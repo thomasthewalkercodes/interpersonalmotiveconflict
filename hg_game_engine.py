@@ -1,4 +1,5 @@
-import random
+from hg_lambda_calc import generate_interaction_matrix
+import numpy as np
 import pandas as pd
 
 steps = 50
@@ -13,9 +14,7 @@ def select_behavior(satisfaction_levels, unsatisfied_octants):
     return random.choices(unsatisfied_octants, weights=probs, k=1)[0]
 
 
-def game_engine(
-    satisfaction_matrix, influence_matrix, steps, decay_rate, growth_rate=1
-):
+def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
     history = {
         "step": [],
         "active_behavior": [],
@@ -27,7 +26,7 @@ def game_engine(
 
     for step in range(steps):
         # Get current satisfaction levels
-        satisfaction_levels = satisfaction_matrix.loc["satisfaction"]
+        satisfaction_levels = sat_m.loc["satisfaction"]
         unsatisfied_octants = satisfaction_levels[
             satisfaction_levels < 0
         ].index.tolist()
@@ -39,18 +38,18 @@ def game_engine(
         # Apply growth and influence if a behavior is active
         if active_behavior is not None:
             # active behavior grows
-            satisfaction_matrix.loc["satisfaction", active_behavior] += growth_rate
+            sat_m.loc["satisfaction", active_behavior] += growth_rate
 
             # Active behavior influences others (not itself)
-            for octant in satisfaction_matrix.columns:
+            for octant in sat_m.columns:
                 if octant != active_behavior:
-                    influence = influence_matrix.loc[active_behavior, octant]
-                    satisfaction_matrix.loc["satisfaction", octant] += influence
+                    influence = inter_m.loc[active_behavior, octant]
+                    sat_m.loc["satisfaction", octant] += influence
 
         # Apply decay AFTER growth and influence
-        for octant in satisfaction_matrix.columns:
+        for octant in sat_m.columns:
             if octant != active_behavior:
-                satisfaction_matrix.loc["satisfaction", octant] -= decay_rate
+                sat_m.loc["satisfaction", octant] -= decay_rate
 
         # Record history (after all updates)
         history["step"].append(step)
@@ -59,3 +58,8 @@ def game_engine(
         history["unsatisfied_octants"].append(unsatisfied_octants)
 
     return history
+
+
+# example usage
+if __name__ == "__main__":
+    generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2)
