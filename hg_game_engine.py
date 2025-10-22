@@ -1,4 +1,5 @@
 from hg_lambda_calc import generate_interaction_matrix
+from hg_lambda_calc import get_lambda
 import numpy as np
 import pandas as pd
 
@@ -59,7 +60,30 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
 
     return history
 
+def generate_satisfaction_matrix(n_motives = 8, mean =0.3, sd=0.5):
+    """Generate initial satisfaction matrix."""
+    sat_values = np.random.normal(mean, sd, size=n_motives)
+    sat_values = np.clip(sat_values, -1, 1)
+    sat_m = pd.DataFrame(
+        [sat_values],
+        columns=[f"motive_{i+1}" for i in range(n_motives)],
+        index=["satisfaction"],
+    )
+    return sat_m
+
+def 
 
 # example usage
 if __name__ == "__main__":
-    generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2)
+    print("EXAMPLE USAGE OF GAME ENGINE WITH INTERACTION AND SATISFACTION MATRICES")
+    inter_m = generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2)
+    sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.5)
+    print("Generated Interaction Matrix:")
+    print(inter_m.round(3))
+    print("\nGenerated Satisfaction Matrix:")
+    print(sat_m.round(3))
+    decay_rate = get_lambda(inter_m, decay_lambda=None)
+    
+
+
+
