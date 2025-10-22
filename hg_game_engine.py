@@ -2,6 +2,7 @@ from hg_lambda_calc import generate_interaction_matrix
 from hg_lambda_calc import get_lambda
 import numpy as np
 import pandas as pd
+import random
 
 steps = 50
 decay_rate = 0.1
@@ -50,17 +51,20 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
         # Apply decay AFTER growth and influence
         for octant in sat_m.columns:
             if octant != active_behavior:
-                sat_m.loc["satisfaction", octant] -= decay_rate
+                sat_m.loc["satisfaction", octant] -= decay_rate * 0.1
+
+        sat_m.loc["satisfaction"] = np.clip(sat_m.loc["satisfaction"], -1, 1)
 
         # Record history (after all updates)
         history["step"].append(step)
         history["active_behavior"].append(active_behavior)
-        history["satisfaction"].append(satisfaction_matrix.copy())
+        history["satisfaction"].append(sat_m.copy())
         history["unsatisfied_octants"].append(unsatisfied_octants)
 
     return history
 
-def generate_satisfaction_matrix(n_motives = 8, mean =0.3, sd=0.5):
+
+def generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.5):
     """Generate initial satisfaction matrix."""
     sat_values = np.random.normal(mean, sd, size=n_motives)
     sat_values = np.clip(sat_values, -1, 1)
@@ -71,19 +75,27 @@ def generate_satisfaction_matrix(n_motives = 8, mean =0.3, sd=0.5):
     )
     return sat_m
 
-def 
 
 # example usage
 if __name__ == "__main__":
     print("EXAMPLE USAGE OF GAME ENGINE WITH INTERACTION AND SATISFACTION MATRICES")
     inter_m = generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2)
-    sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.5)
+    sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.3)
     print("Generated Interaction Matrix:")
     print(inter_m.round(3))
     print("\nGenerated Satisfaction Matrix:")
     print(sat_m.round(3))
     decay_rate = get_lambda(inter_m, decay_lambda=None)
-    
-
-
-
+    print(f"\nUsing Decay Rate (Lambda): {decay_rate['decay_lambda']:.4f}")
+    game_engine_history = game_engine(
+        sat_m, inter_m, steps=100, decay_rate=decay_rate["decay_lambda"], growth_rate=1
+    )
+    print("Game engine simulation completed.")
+    # Print final satisfaction levels
+    final_satisfaction = game_engine_history["satisfaction"][-1]
+    print("\nFinal Satisfaction Levels:")
+    print(final_satisfaction.round(3))
+    # print active behavior history
+    print("\nActive Behavior History:")
+    for i, active in enumerate(game_engine_history["active_behavior"]):
+        print(f"Step {i}: Active Behavior: {active}")

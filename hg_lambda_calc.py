@@ -1,15 +1,18 @@
 import numpy as np
+import pandas as pd
 
 
 def generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2):
     """Generate symmetric interaction matrix."""
-    upper_triangle = np.random.normal(mean, sd, size=(n_motives, n_motives))
-    inter_m = np.triu(upper_triangle, k=1)
-    inter_m = inter_m + inter_m.T
-    inter_m = np.clip(inter_m, -1, 1)
-    np.fill_diagonal(inter_m, 0)
-
-    return inter_m
+    # Create a random interaction matrix
+    matrix = np.random.normal(mean, sd, size=(n_motives, n_motives))
+    matrix = (matrix + matrix.T) / 2  # Make it symmetric
+    np.fill_diagonal(matrix, 0)  # No self-influence
+    return pd.DataFrame(
+        matrix,
+        columns=[f"motive_{i+1}" for i in range(n_motives)],
+        index=[f"motive_{i+1}" for i in range(n_motives)],
+    )
 
 
 def get_lambda(inter_m, decay_lambda=None):
