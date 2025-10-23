@@ -1,2 +1,2 @@
 # interpersonalmotiveconflict
-Here I basically replicate what westermann did with the conflicting motives
+Here I basically replicate what westermann/titus  did with the conflicting motives
