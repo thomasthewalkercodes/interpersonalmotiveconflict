@@ -24,57 +24,78 @@ class PatternDetector:
     """Detects repeating patterns in behavior sequences."""
 
     @staticmethod
-    def find_longest_repeating_pattern(sequence):
+    def find_longest_repeating_pattern(
+        sequence, max_pattern_length=50, timeout_seconds=5
+    ):
         """
-        Find the longest repeating pattern in a sequence.
+        Find the longest repeating pattern in ACTIVE behaviors only (skips None).
 
         Args:
             sequence: List of behaviors (can contain None)
+            max_pattern_length: Maximum pattern length to search (default 50)
+            timeout_seconds: Maximum time to spend searching (default 5)
 
         Returns:
             dict with pattern info: pattern, length, first_occurrence, num_occurrences
         """
-        if not sequence:
+        if not sequence or len(sequence) < 2:
             return None
 
-        # Remove None values and convert to string for pattern matching
-        clean_seq = [str(x) if x is not None else "None" for x in sequence]
-        seq_str = "|".join(clean_seq)  # Use delimiter to avoid substring issues
+        import time
+
+        start_time = time.time()
+
+        # CRITICAL: Remove None values - only analyze ACTIVE behaviors
+        # This makes pattern detection much faster and more meaningful
+        active_seq = [x for x in sequence if x is not None]
+
+        if len(active_seq) < 4:  # Need at least 4 active behaviors for a pattern
+            return None
+
+        # Limit sequence length for performance
+        if len(active_seq) > 1000:
+            active_seq = active_seq[:1000]  # Only analyze first 1000 active behaviors
 
         best_pattern = None
         max_length = 0
 
-        # Try different pattern lengths, starting from longer patterns
-        max_possible_length = len(clean_seq) // 2  # Pattern must repeat at least twice
+        # Limit pattern length to avoid hanging
+        max_possible = min(len(active_seq) // 2, max_pattern_length)
 
-        for pattern_len in range(max_possible_length, 0, -1):
-            # Try each possible starting position
-            for start in range(len(clean_seq) - pattern_len):
-                pattern = clean_seq[start : start + pattern_len]
-                pattern_str = "|".join(pattern)
+        # Try different pattern lengths (start with short patterns for speed)
+        for pattern_len in range(2, max_possible + 1):
+            # Check timeout
+            if time.time() - start_time > timeout_seconds:
+                break
 
-                # Count occurrences (must be complete pattern)
-                occurrences = []
-                search_start = 0
+            # Use a sliding window approach - much faster
+            seen_patterns = {}
 
-                while search_start <= len(clean_seq) - pattern_len:
-                    candidate = clean_seq[search_start : search_start + pattern_len]
-                    if candidate == pattern:
-                        occurrences.append(search_start)
-                        search_start += pattern_len  # Move past this occurrence
-                    else:
-                        search_start += 1
+            for i in range(len(active_seq) - pattern_len + 1):
+                pattern_tuple = tuple(active_seq[i : i + pattern_len])
 
-                # Need at least 2 occurrences to be a repeating pattern
-                if len(occurrences) >= 2 and pattern_len > max_length:
+                if pattern_tuple not in seen_patterns:
+                    seen_patterns[pattern_tuple] = [i]
+                else:
+                    seen_patterns[pattern_tuple].append(i)
+
+            # Find patterns that repeat at least twice
+            for pattern_tuple, positions in seen_patterns.items():
+                if len(positions) >= 2 and pattern_len > max_length:
                     max_length = pattern_len
                     best_pattern = {
-                        "pattern": pattern,
+                        "pattern": list(pattern_tuple),
                         "length": pattern_len,
-                        "first_occurrence": occurrences[0],
-                        "num_occurrences": len(occurrences),
-                        "occurrence_positions": occurrences,
+                        "first_occurrence": positions[0],
+                        "num_occurrences": len(positions),
+                        "occurrence_positions": positions[
+                            :10
+                        ],  # Limit stored positions
                     }
+
+            # If we found a good long pattern, we can stop early
+            if max_length > 20:
+                break
 
         return best_pattern
 
@@ -82,6 +103,7 @@ class PatternDetector:
     def calculate_sequence_similarity(seq1, seq2):
         """
         Calculate similarity between two behavior sequences.
+        Only compares ACTIVE behaviors (skips None).
         Uses multiple metrics for comprehensive comparison.
 
         Args:
@@ -90,17 +112,22 @@ class PatternDetector:
         Returns:
             dict with similarity metrics
         """
-        # Remove None values for fair comparison
+        # IMPORTANT: Remove None values - only compare active behaviors
         clean_seq1 = [x for x in seq1 if x is not None]
         clean_seq2 = [x for x in seq2 if x is not None]
 
+        if len(clean_seq1) == 0 or len(clean_seq2) == 0:
+            return {
+                "exact_match_ratio": 0.0,
+                "frequency_similarity": 0.0,
+                "normalized_edit_similarity": 0.0,
+                "overall_similarity": 0.0,
+            }
+
         # 1. Exact match ratio (how many positions match)
         min_len = min(len(clean_seq1), len(clean_seq2))
-        if min_len == 0:
-            exact_match_ratio = 0.0
-        else:
-            matches = sum(1 for i in range(min_len) if clean_seq1[i] == clean_seq2[i])
-            exact_match_ratio = matches / min_len
+        matches = sum(1 for i in range(min_len) if clean_seq1[i] == clean_seq2[i])
+        exact_match_ratio = matches / min_len
 
         # 2. Frequency distribution similarity (Bhattacharyya coefficient)
         freq1 = Counter(clean_seq1)
@@ -117,14 +144,16 @@ class PatternDetector:
             p2 = freq2.get(behavior, 0) / total2 if total2 > 0 else 0
             bhattacharyya += np.sqrt(p1 * p2)
 
-        # 3. Edit distance (normalized Levenshtein)
-        # For simplicity, use a basic version
+        # 3. Edit distance (normalized Levenshtein) - limit length for speed
+        max_compare_len = 800  # Only compare first 200 active behaviors
+        seq1_limited = clean_seq1[:max_compare_len]
+        seq2_limited = clean_seq2[:max_compare_len]
+
         edit_distance = PatternDetector._levenshtein_distance(
-            clean_seq1[:100], clean_seq2[:100]
+            seq1_limited, seq2_limited
         )
-        normalized_edit_distance = 1 - (
-            edit_distance / max(len(clean_seq1[:100]), len(clean_seq2[:100]), 1)
-        )
+        max_len = max(len(seq1_limited), len(seq2_limited), 1)
+        normalized_edit_distance = 1 - (edit_distance / max_len)
 
         return {
             "exact_match_ratio": float(exact_match_ratio),
@@ -236,7 +265,7 @@ class BatchSimulationProcessor:
         satisfaction_array = self._extract_satisfaction_array(game_history, n_motives)
         behavior_sequence = game_history["active_behavior"]
 
-        # Save only essential data
+        # Save data (skip plotting for now to debug)
         self._save_simulation_data(
             seed,
             inter_m,
@@ -246,13 +275,24 @@ class BatchSimulationProcessor:
             behavior_sequence,
         )
 
-        # Create satisfaction plot
-        self._plot_satisfaction(
-            seed, satisfaction_array, game_history["step"], list(inter_m.columns)
-        )
+        # Create satisfaction plot (with error handling)
+        try:
+            self._plot_satisfaction(
+                seed, satisfaction_array, game_history["step"], list(inter_m.columns)
+            )
+        except Exception as e:
+            print(f"      ⚠️ Plot failed for sim {seed}: {str(e)[:50]}...")
 
-        # Pattern detection
-        pattern_info = PatternDetector.find_longest_repeating_pattern(behavior_sequence)
+        # Pattern detection (with timeout to prevent hanging)
+        try:
+            pattern_info = PatternDetector.find_longest_repeating_pattern(
+                behavior_sequence,
+                max_pattern_length=30,  # Limit pattern length
+                timeout_seconds=3,  # 3 second timeout per simulation
+            )
+        except Exception as e:
+            print(f"      ⚠️ Pattern detection failed for sim {seed}: {str(e)[:50]}...")
+            pattern_info = None
 
         # Store for cross-simulation analysis
         self.all_behavior_sequences.append(
@@ -392,6 +432,7 @@ class BatchSimulationProcessor:
         """Analyze all detected patterns and save results."""
         if not self.all_patterns:
             print("⚠️  No repeating patterns detected in any simulation")
+            print("    (Note: Only ACTIVE behaviors analyzed, None values skipped)")
             return
 
         # Create patterns dataframe
@@ -412,6 +453,7 @@ class BatchSimulationProcessor:
         patterns_df.to_csv(self.analysis_dir / "detected_patterns.csv", index=False)
 
         print(f"✓ Pattern analysis saved: {len(self.all_patterns)} patterns detected")
+        print(f"  (Analyzed ACTIVE behaviors only, skipped None values)")
         print(f"  - Mean pattern length: {patterns_df['pattern_length'].mean():.2f}")
         print(f"  - Mean occurrences: {patterns_df['num_occurrences'].mean():.2f}")
 
@@ -649,9 +691,9 @@ def run_batch_simulations(
 if __name__ == "__main__":
     # Run batch processing
     processor = run_batch_simulations(
-        n_simulations=10,
+        n_simulations=1000,
         n_motives=8,
-        steps=800,
+        steps=1000,
         growth_rate=1,
         inter_mean=0.2,
         inter_sd=0.3,

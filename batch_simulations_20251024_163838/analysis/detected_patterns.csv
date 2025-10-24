@@ -1,0 +1,11 @@
+seed,pattern,pattern_length,first_occurrence_step,num_occurrences,occurrence_positions
+0,motive_5→motive_5→motive_3→motive_3→motive_8→motive_8→motive_5→motive_5→motive_3→motive_3→motive_5→motive_5→motive_3→motive_3→motive_8→motive_8→motive_5→motive_5→motive_3→motive_3→motive_5,21,0,17,"[0, 10, 20, 30, 40, 50, 60, 86, 96, 106]"
+1,motive_2→motive_2→motive_4→motive_4→motive_2→motive_2→motive_4→motive_4→motive_2→motive_2→motive_5→motive_5→motive_4→motive_4→motive_2→motive_2→motive_4→motive_4→motive_2→motive_2→motive_4,21,4,3,"[4, 90, 176]"
+2,motive_1→motive_1→motive_5→motive_5→motive_1→motive_1→motive_3→motive_3→motive_5→motive_5→motive_1→motive_1→motive_5→motive_5→motive_1→motive_1→motive_5→motive_5→motive_1→motive_1→motive_5,21,4,25,"[4, 22, 40, 58, 76, 94, 112, 130, 148, 166]"
+3,motive_4→motive_4→motive_1→motive_1→motive_5→motive_5→motive_4→motive_4→motive_6→motive_6→motive_1→motive_1→motive_5→motive_5→motive_4→motive_4→motive_6→motive_6→motive_1→motive_1→motive_5,21,0,7,"[0, 44, 72, 108, 152, 204, 312]"
+4,motive_1→motive_1→motive_6→motive_6→motive_3→motive_3→motive_1→motive_1→motive_6→motive_6→motive_1→motive_1→motive_3→motive_3→motive_6→motive_6→motive_1→motive_1→motive_6→motive_6→motive_3,21,30,3,"[30, 46, 62]"
+5,motive_5→motive_5→motive_2→motive_2→motive_7→motive_7→motive_1→motive_1→motive_7→motive_7→motive_2→motive_2→motive_5→motive_5→motive_7→motive_7→motive_2→motive_2→motive_5→motive_5→motive_7,21,38,2,"[38, 150]"
+6,motive_5→motive_5→motive_1→motive_1→motive_5→motive_5→motive_7→motive_7→motive_1→motive_1→motive_5→motive_5→motive_4→motive_4→motive_1→motive_1→motive_5→motive_5→motive_7→motive_7→motive_3,21,6,4,"[6, 44, 82, 120]"
+7,motive_3→motive_3→motive_4→motive_4→motive_2→motive_2→motive_6→motive_6→motive_4→motive_4→motive_3→motive_3→motive_2→motive_2→motive_4→motive_4→motive_3→motive_3→motive_4→motive_4→motive_2,21,80,5,"[80, 102, 124, 146, 168]"
+8,motive_1→motive_1→motive_5→motive_5→motive_4→motive_4→motive_1→motive_1→motive_5→motive_5→motive_4→motive_4→motive_1→motive_1→motive_7→motive_7→motive_4→motive_4→motive_1→motive_1→motive_5,21,14,2,"[14, 32]"
+9,motive_7→motive_7→motive_8→motive_8→motive_1→motive_1→motive_7→motive_7→motive_8→motive_8→motive_7→motive_7→motive_1→motive_1→motive_8→motive_8→motive_7→motive_7→motive_6→motive_6→motive_8,21,0,4,"[0, 36, 108, 144]"
