@@ -84,16 +84,16 @@ if __name__ == "__main__":
     print("=" * 70)
 
     # Set random seed for reproducibility
-    np.random.seed(41)
-    random.seed(41)
+    np.random.seed(30)
+    random.seed(30)
 
     # Simulation parameters
     n_motives = 8
-    steps = 400
+    steps = 1500
     growth_rate = 1
 
     print("\n1. Generating interaction matrix...")
-    inter_m = generate_interaction_matrix(n_motives=n_motives, mean=0, sd=0.3)
+    inter_m = generate_interaction_matrix(n_motives=n_motives, mean=0.2, sd=0.3)
     print("   Interaction Matrix:")
     print(inter_m.round(3))
 

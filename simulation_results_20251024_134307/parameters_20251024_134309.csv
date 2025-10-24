@@ -1,0 +1,2 @@
+n_motives,steps,decay_rate,growth_rate,mean_interaction,calculation_method
+8,600,0.3574571946729065,1,0,manual

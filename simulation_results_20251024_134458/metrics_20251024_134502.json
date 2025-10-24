@@ -1,0 +1,239 @@
+{
+  "input": {
+    "mean_congruence": 0.21631707765270544,
+    "mean_conflict": -0.13396510860930574,
+    "mean_initial_satisfaction": 0.32554908254796955,
+    "network": {
+      "top_dyads": [
+        {
+          "dyad": "motive_1-motive_5",
+          "interaction": 0.6302019905743351,
+          "strength": 0.6302019905743351
+        },
+        {
+          "dyad": "motive_3-motive_5",
+          "interaction": 0.5889279213464345,
+          "strength": 0.5889279213464345
+        },
+        {
+          "dyad": "motive_1-motive_3",
+          "interaction": 0.5100232415402955,
+          "strength": 0.5100232415402955
+        },
+        {
+          "dyad": "motive_2-motive_8",
+          "interaction": 0.5068901173990888,
+          "strength": 0.5068901173990888
+        },
+        {
+          "dyad": "motive_3-motive_6",
+          "interaction": -0.4666755944137728,
+          "strength": 0.4666755944137728
+        }
+      ],
+      "density": 0.39285714285714285,
+      "positive_ratio": 0.7857142857142857
+    }
+  },
+  "output": {
+    "mean_satisfaction_over_time": 0.8056138020889723,
+    "final_mean_satisfaction": 0.6996352280894047,
+    "behavior_rhythm": {
+      "mean_duration": 2.0,
+      "std_duration": 0.0,
+      "median_duration": 2.0,
+      "switch_count": 285
+    },
+    "behavior_frequencies": {
+      "motive_1": 0,
+      "motive_2": 34,
+      "motive_3": 266,
+      "motive_4": 2,
+      "motive_5": 0,
+      "motive_6": 268,
+      "motive_7": 0,
+      "motive_8": 0
+    },
+    "dominant_behaviors": {
+      "motive_1": 0.0,
+      "motive_2": 0.056666666666666664,
+      "motive_3": 0.44333333333333336,
+      "motive_4": 0.0033333333333333335,
+      "motive_5": 0.0,
+      "motive_6": 0.44666666666666666,
+      "motive_7": 0.0,
+      "motive_8": 0.0
+    },
+    "behavior_reappearance_times": {
+      "motive_1": null,
+      "motive_2": {
+        "mean": 17.151515151515152,
+        "std": 16.69353206651699,
+        "min": 1,
+        "max": 37
+      },
+      "motive_3": {
+        "mean": 2.2,
+        "std": 1.451609386619126,
+        "min": 1,
+        "max": 7
+      },
+      "motive_4": {
+        "mean": 1.0,
+        "std": 0.0,
+        "min": 1,
+        "max": 1
+      },
+      "motive_5": null,
+      "motive_6": {
+        "mean": 2.198501872659176,
+        "std": 1.4488525755151962,
+        "min": 1,
+        "max": 7
+      },
+      "motive_7": null,
+      "motive_8": null
+    },
+    "satisfaction_durations": {
+      "satisfied": {
+        "mean": 600.0,
+        "total_time": 600,
+        "num_periods": 1
+      },
+      "unsatisfied": {
+        "mean": 0.0,
+        "total_time": 0,
+        "num_periods": 0
+      }
+    },
+    "simultaneous_satisfactions": {
+      "satisfied": {
+        "mean": 7.443333333333333,
+        "max": 8,
+        "distribution": {
+          "7": 286,
+          "8": 290,
+          "6": 24
+        }
+      },
+      "unsatisfied": {
+        "mean": 0.5566666666666666,
+        "max": 2,
+        "distribution": {
+          "1": 286,
+          "0": 290,
+          "2": 24
+        }
+      }
+    },
+    "markov_chain": {
+      "transition_probabilities": {
+        "motive_1": {},
+        "motive_2": {
+          "motive_2": 0.5,
+          "motive_3": 0.3235294117647059,
+          "motive_6": 0.17647058823529413
+        },
+        "motive_3": {
+          "motive_2": 0.018796992481203006,
+          "motive_3": 0.5,
+          "motive_6": 0.48120300751879697
+        },
+        "motive_4": {
+          "motive_2": 0.5,
+          "motive_4": 0.5
+        },
+        "motive_5": {},
+        "motive_6": {
+          "motive_2": 0.04119850187265917,
+          "motive_3": 0.45692883895131087,
+          "motive_6": 0.50187265917603
+        },
+        "motive_7": {},
+        "motive_8": {}
+      },
+      "transition_matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.5,
+          0.3235294117647059,
+          0.0,
+          0.0,
+          0.17647058823529413,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.018796992481203006,
+          0.5,
+          0.0,
+          0.0,
+          0.48120300751879697,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.5,
+          0.0,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.04119850187265917,
+          0.45692883895131087,
+          0.0,
+          0.0,
+          0.50187265917603,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    }
+  }
+}

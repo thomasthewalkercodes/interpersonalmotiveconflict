@@ -1,0 +1,259 @@
+{
+  "input": {
+    "mean_congruence": 0.2396855520510089,
+    "mean_conflict": -0.11504244499063847,
+    "mean_initial_satisfaction": 0.1949721077444495,
+    "network": {
+      "top_dyads": [
+        {
+          "dyad": "motive_1-motive_5",
+          "interaction": 0.8211867837100224,
+          "strength": 0.8211867837100224
+        },
+        {
+          "dyad": "motive_1-motive_8",
+          "interaction": 0.672131658646737,
+          "strength": 0.672131658646737
+        },
+        {
+          "dyad": "motive_1-motive_3",
+          "interaction": 0.5141755399598339,
+          "strength": 0.5141755399598339
+        },
+        {
+          "dyad": "motive_5-motive_7",
+          "interaction": 0.44780628664417627,
+          "strength": 0.44780628664417627
+        },
+        {
+          "dyad": "motive_1-motive_7",
+          "interaction": 0.42873591815595014,
+          "strength": 0.42873591815595014
+        }
+      ],
+      "density": 0.39285714285714285,
+      "positive_ratio": 0.8214285714285714
+    }
+  },
+  "output": {
+    "mean_satisfaction_over_time": 0.6296708909321252,
+    "final_mean_satisfaction": 0.6194550049764477,
+    "behavior_rhythm": {
+      "mean_duration": 2.0319148936170213,
+      "std_duration": 0.3077760881167964,
+      "median_duration": 2.0,
+      "switch_count": 94
+    },
+    "behavior_frequencies": {
+      "motive_1": 0,
+      "motive_2": 2,
+      "motive_3": 14,
+      "motive_4": 0,
+      "motive_5": 74,
+      "motive_6": 18,
+      "motive_7": 4,
+      "motive_8": 74
+    },
+    "dominant_behaviors": {
+      "motive_1": 0.0,
+      "motive_2": 0.0033333333333333335,
+      "motive_3": 0.023333333333333334,
+      "motive_4": 0.0,
+      "motive_5": 0.12333333333333334,
+      "motive_6": 0.03,
+      "motive_7": 0.006666666666666667,
+      "motive_8": 0.12333333333333334
+    },
+    "behavior_reappearance_times": {
+      "motive_1": null,
+      "motive_2": {
+        "mean": 1.0,
+        "std": 0.0,
+        "min": 1,
+        "max": 1
+      },
+      "motive_3": {
+        "mean": 38.92307692307692,
+        "std": 42.26557344015164,
+        "min": 1,
+        "max": 112
+      },
+      "motive_4": null,
+      "motive_5": {
+        "mean": 7.780821917808219,
+        "std": 8.03459399685598,
+        "min": 1,
+        "max": 39
+      },
+      "motive_6": {
+        "mean": 32.411764705882355,
+        "std": 33.78140599506569,
+        "min": 1,
+        "max": 75
+      },
+      "motive_7": {
+        "mean": 16.0,
+        "std": 21.213203435596427,
+        "min": 1,
+        "max": 46
+      },
+      "motive_8": {
+        "mean": 7.780821917808219,
+        "std": 7.78345026030154,
+        "min": 1,
+        "max": 30
+      }
+    },
+    "satisfaction_durations": {
+      "satisfied": {
+        "mean": 600.0,
+        "total_time": 600,
+        "num_periods": 1
+      },
+      "unsatisfied": {
+        "mean": 0.0,
+        "total_time": 0,
+        "num_periods": 0
+      }
+    },
+    "simultaneous_satisfactions": {
+      "satisfied": {
+        "mean": 7.82,
+        "max": 8,
+        "distribution": {
+          "8": 502,
+          "7": 88,
+          "6": 10
+        }
+      },
+      "unsatisfied": {
+        "mean": 0.18,
+        "max": 2,
+        "distribution": {
+          "0": 502,
+          "1": 88,
+          "2": 10
+        }
+      }
+    },
+    "markov_chain": {
+      "transition_probabilities": {
+        "motive_1": {},
+        "motive_2": {
+          "motive_2": 0.5,
+          "motive_7": 0.5
+        },
+        "motive_3": {
+          "motive_3": 0.5,
+          "motive_5": 0.07142857142857142,
+          "motive_8": 0.42857142857142855
+        },
+        "motive_4": {},
+        "motive_5": {
+          "motive_3": 0.0136986301369863,
+          "motive_5": 0.5068493150684932,
+          "motive_6": 0.0821917808219178,
+          "motive_8": 0.3972602739726027
+        },
+        "motive_6": {
+          "motive_3": 0.3333333333333333,
+          "motive_5": 0.05555555555555555,
+          "motive_6": 0.5,
+          "motive_8": 0.1111111111111111
+        },
+        "motive_7": {
+          "motive_6": 0.5,
+          "motive_7": 0.5
+        },
+        "motive_8": {
+          "motive_5": 0.47297297297297297,
+          "motive_6": 0.013513513513513514,
+          "motive_7": 0.013513513513513514,
+          "motive_8": 0.5
+        }
+      },
+      "transition_matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.5,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.5,
+          0.0,
+          0.07142857142857142,
+          0.0,
+          0.0,
+          0.42857142857142855
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0136986301369863,
+          0.0,
+          0.5068493150684932,
+          0.0821917808219178,
+          0.0,
+          0.3972602739726027
+        ],
+        [
+          0.0,
+          0.0,
+          0.3333333333333333,
+          0.0,
+          0.05555555555555555,
+          0.5,
+          0.0,
+          0.1111111111111111
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.47297297297297297,
+          0.013513513513513514,
+          0.013513513513513514,
+          0.5
+        ]
+      ]
+    }
+  }
+}
