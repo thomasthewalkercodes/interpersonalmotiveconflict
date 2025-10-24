@@ -48,11 +48,11 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
                     influence = inter_m.loc[active_behavior, octant]
                     sat_m.loc["satisfaction", octant] += influence
 
-        # Apply decay AFTER growth and influence
+        # Apply decay AFTER growth and influence (not the active motive)
         for octant in sat_m.columns:
             if octant != active_behavior:
-                sat_m.loc["satisfaction", octant] -= decay_rate * 0.1
-
+                sat_m.loc["satisfaction", octant] -= decay_rate / 8
+        # Clip all satisfaction values to be within the range [-1, 1]
         sat_m.loc["satisfaction"] = np.clip(sat_m.loc["satisfaction"], -1, 1)
 
         # Record history (after all updates)
@@ -79,8 +79,8 @@ def generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.5):
 # example usage
 if __name__ == "__main__":
     print("EXAMPLE USAGE OF GAME ENGINE WITH INTERACTION AND SATISFACTION MATRICES")
-    inter_m = generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2)
-    sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.3)
+    inter_m = generate_interaction_matrix(n_motives=8, mean=0, sd=0.3)
+    sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.2, sd=0.3)
     print("Generated Interaction Matrix:")
     print(inter_m.round(3))
     print("\nGenerated Satisfaction Matrix:")
@@ -99,3 +99,5 @@ if __name__ == "__main__":
     print("\nActive Behavior History:")
     for i, active in enumerate(game_engine_history["active_behavior"]):
         print(f"Step {i}: Active Behavior: {active}")
+
+    # understand bleeding and saturation
