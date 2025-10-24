@@ -565,8 +565,8 @@ if __name__ == "__main__":
         n_motives=8,
         steps=1000,
         growth_rate=1,
-        inter_mean=0.0,
-        inter_sd=0.1,
+        inter_mean=0.1,
+        inter_sd=0.6,
         sat_mean=0.1,
         sat_sd=0.2,
     )

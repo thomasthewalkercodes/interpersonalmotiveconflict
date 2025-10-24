@@ -1,0 +1,9 @@
+{
+  "mean_overall_similarity": 0.45926742864826464,
+  "std_overall_similarity": 0.03258529443738337,
+  "mean_exact_match": 0.1252378394958078,
+  "mean_frequency_similarity": 0.9171772806715688,
+  "mean_edit_similarity": 0.335387165777417,
+  "num_comparisons": 4984,
+  "num_simulations": 1000
+}

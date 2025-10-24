@@ -1,0 +1,6 @@
+{
+  "total_simulations": 1000,
+  "simulations_with_patterns": 1000,
+  "mean_decay_rate": 0.24337000109634205,
+  "std_decay_rate": 0.013869806255159926
+}
