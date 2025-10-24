@@ -1,0 +1,14 @@
+,Value
+total_simulations,1000.0
+simulations_with_patterns,1000.0
+pattern_detection_rate,1.0
+total_patterns_detected,1000.0
+unique_structural_patterns,531.0
+mean_pattern_length,21.0
+median_pattern_length,21.0
+std_pattern_length,0.0
+min_pattern_length,21.0
+max_pattern_length,21.0
+mean_occurrences,58.914
+median_occurrences,8.0
+max_occurrences,490.0
