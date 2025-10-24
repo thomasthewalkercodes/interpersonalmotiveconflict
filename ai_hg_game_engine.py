@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     # Simulation parameters
     n_motives = 8
-    steps = 1500
+    steps = 200
     growth_rate = 1
 
     print("\n1. Generating interaction matrix...")
