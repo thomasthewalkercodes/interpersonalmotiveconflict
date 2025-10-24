@@ -563,12 +563,12 @@ if __name__ == "__main__":
     processor = run_batch_simulations(
         n_simulations=1000,
         n_motives=8,
-        steps=2000,
+        steps=1000,
         growth_rate=1,
-        inter_mean=0.2,
-        inter_sd=0.3,
-        sat_mean=0.2,
-        sat_sd=0.3,
+        inter_mean=0.0,
+        inter_sd=0.1,
+        sat_mean=0.1,
+        sat_sd=0.2,
     )
 
     print("\n✅ Batch processing completed successfully!")
