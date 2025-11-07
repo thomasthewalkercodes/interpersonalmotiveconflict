@@ -5,6 +5,8 @@ import pandas as pd
 
 
 class GenerateDecayMatrix:
+
+    @staticmethod
     def matrix_specific_decay(inter_m, decay_lambda=None):
         n_motives = inter_m.shape[0]
         row_sums = np.sum(inter_m, axis=1)
@@ -17,11 +19,34 @@ class GenerateDecayMatrix:
         if decay_lambda is None:
             decay_lambda = lambda_eq
 
-        # Calculate stability ratio
-        stability_ratio = (1 + mean_row_sum) / ((n_motives - 1) * decay_lambda)
+        decay_lambda = round(decay_lambda, 3)
 
-        return {
-            "decay_lambda": decay_lambda,
-            "lambda_eq": lambda_eq,
-            "stability_ratio": stability_ratio,
-        }
+        return {decay_lambda}
+
+    @staticmethod
+    def individual_decay(
+        n_motives=8, angular_displacement=np.pi / 4, amplitude=1, elevation=0
+    ):
+        cat_angles = np.linspace(
+            angular_displacement,
+            angular_displacement + 2 * np.pi,
+            n_motives,
+            endpoint=False,
+        )
+
+        # Calculate decay rates based on angles + round
+        decay_values = np.round(amplitude * np.cos(cat_angles) + elevation, 3)
+        return pd.DataFrame(
+            [decay_values],
+            columns=[f"motive_{i+1}" for i in range(n_motives)],
+            index=["decay_rate"],
+        )
+
+
+if __name__ == "__main__":
+    generator = GenerateDecayMatrix()  # Create an instance of the class
+    decay_df = generator.individual_decay(
+        n_motives=8, amplitude=1, elevation=0
+    )  # Call the method
+    print("Decay Values Arranged in Circumplex Pattern:")
+    print(decay_df)

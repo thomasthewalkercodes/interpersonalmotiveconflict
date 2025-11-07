@@ -10,6 +10,7 @@ class SatisfactonMatrixGenerator:
         """Generate initial satisfaction matrix."""
         sat_values = np.random.normal(mean, sd, size=n_motives)
         sat_values = np.clip(sat_values, -1, 1)
+        sat_values = np.round(sat_values, 3)
         sat_m = pd.DataFrame(
             [sat_values],
             columns=[f"motive_{i+1}" for i in range(n_motives)],

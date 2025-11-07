@@ -12,6 +12,7 @@ class GenerateInteractionMatrix:
         matrix = np.random.normal(mean, sd, size=(n_motives, n_motives))
         matrix = (matrix + matrix.T) / 2  # Make it symmetric
         np.fill_diagonal(matrix, 0)  # No self-influence
+        matrix = np.round(matrix, 3)  # Round to 3 decimal places for clarity
         return pd.DataFrame(
             matrix,
             columns=[f"motive_{i+1}" for i in range(n_motives)],
