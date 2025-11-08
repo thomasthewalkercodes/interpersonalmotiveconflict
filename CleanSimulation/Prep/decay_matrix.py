@@ -24,8 +24,8 @@ class GenerateDecayMatrix:
         return {decay_lambda}
 
     @staticmethod
-    def individual_decay(
-        n_motives=8, angular_displacement=np.pi / 4, amplitude=1, elevation=0
+    def individual_decay_sin(
+        n_motives=8, angular_displacement=np.pi, amplitude=0.1, elevation=0.2
     ):
         cat_angles = np.linspace(
             angular_displacement,
@@ -45,8 +45,8 @@ class GenerateDecayMatrix:
 
 if __name__ == "__main__":
     generator = GenerateDecayMatrix()  # Create an instance of the class
-    decay_df = generator.individual_decay(
-        n_motives=8, amplitude=1, elevation=0
+    decay_df = generator.individual_decay_sin(
+        n_motives=8, amplitude=0.2, elevation=0.8
     )  # Call the method
     print("Decay Values Arranged in Circumplex Pattern:")
     print(decay_df)

@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import random
 
+from decay_matrix import GenerateDecayMatrix
+
 
 # game_engine, and then all the rest
 def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
@@ -14,6 +16,17 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
     }
 
     active_behavior = None
+    if decay_params is None:
+        decay_params = {
+            "amplitude": 0.2,
+            "elevation": 0.5,
+            "angular_displacement": np.pi,
+        }
+
+    decay_generator = GenerateDecayMatrix()
+    decay_matrix = decay_generator.individual_decay_sin(
+        n_motives=len(sat_m.columns), **decay_params
+    )
 
     for step in range(steps):
         # Get current satisfaction levels
@@ -42,7 +55,8 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
         # Apply decay AFTER growth and influence (not the active motive)
         for octant in sat_m.columns:
             if octant != active_behavior:
-                sat_m.loc["satisfaction", octant] -= decay_rate / 8
+                decay_rate = decay_matrix.loc["decay_rate", octant]
+                sat_m.loc["satisfaction", octant] -= decay_rate
         # Clip all satisfaction values to be within the range [-1, 1]
         sat_m.loc["satisfaction"] = np.clip(sat_m.loc["satisfaction"], -1, 1)
 
