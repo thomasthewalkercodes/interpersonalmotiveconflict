@@ -5,6 +5,7 @@ import pandas as pd
 
 
 class GenerateGrowthMatrix:
+    @staticmethod
     def one_growth(n_motives=8):
         growth_rate_values = np.ones(n_motives)
 

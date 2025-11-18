@@ -6,6 +6,7 @@ import pandas as pd
 
 
 class SatisfactonMatrixGenerator:
+    @staticmethod
     def normal_distribution_sat_matrix(n_motives=8, mean=0.2, sd=0.3):
         """Generate initial satisfaction matrix."""
         sat_values = np.random.normal(mean, sd, size=n_motives)

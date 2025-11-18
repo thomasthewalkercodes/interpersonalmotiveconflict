@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import random
 
-from decay_matrix import GenerateDecayMatrix
-
 
 # game_engine, and then all the rest
 def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
@@ -16,17 +14,7 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
     }
 
     active_behavior = None
-    if decay_params is None:
-        decay_params = {
-            "amplitude": 0.2,
-            "elevation": 0.5,
-            "angular_displacement": np.pi,
-        }
-
-    decay_generator = GenerateDecayMatrix()
-    decay_matrix = decay_generator.individual_decay_sin(
-        n_motives=len(sat_m.columns), **decay_params
-    )
+    decay_matrix = decay_rate  # decay_rate is already a DataFrame from the caller
 
     for step in range(steps):
         # Get current satisfaction levels

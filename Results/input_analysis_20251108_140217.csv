@@ -1,0 +1,2 @@
+Influence_mean,Influence_sd,Influence_min,Influence_max,Influence_median,Starting_Satisfaction_mean,Starting_Satisfaction_sd,Starting_Satisfaction_min,Starting_Satisfaction_max,Starting_Satisfaction_median,Decay_mean,Decay_sd,Decay_min,Decay_max,Decay_median,total_steps,unique_behaviors,most_common_behavior,most_common_count,behavior_switches,none_count
+-0.043178571428571434,0.14602080418591742,-0.349,0.283,-0.0345,0.376625,0.2062110190436001,0.006,0.661,0.376,0.2,0.07085548673179798,0.1,0.3,0.2,100,8,motive_6,20,50,1

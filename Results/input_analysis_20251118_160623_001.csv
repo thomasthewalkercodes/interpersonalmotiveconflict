@@ -1,0 +1,2 @@
+n_motives,steps,growth_rate,sat_mean,sat_sd,interaction_type,inter_start_motive,inter_amplitude,inter_elevation,inter_mean,inter_sd,decay_type,decay_start_motive,decay_amplitude,decay_elevation,decay_lambda
+8,100,1.0,0.2,0.3,circumplex,1,0.3,0.1,0.0,0.2,individual_sin,1,0.1,0.2,

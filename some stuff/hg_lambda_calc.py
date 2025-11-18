@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def generate_interaction_matrix(n_motives=8, mean=0.0, sd=0.2):
+def generate_interaction_matrix(n_motives=8, mean=0.2, sd=0.1):
     """Generate symmetric interaction matrix."""
     # Create a random interaction matrix
     matrix = np.random.normal(mean, sd, size=(n_motives, n_motives))

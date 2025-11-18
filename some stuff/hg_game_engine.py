@@ -79,7 +79,7 @@ def generate_satisfaction_matrix(n_motives=8, mean=0.3, sd=0.5):
 # example usage
 if __name__ == "__main__":
     print("EXAMPLE USAGE OF GAME ENGINE WITH INTERACTION AND SATISFACTION MATRICES")
-    inter_m = generate_interaction_matrix(n_motives=8, mean=0, sd=0.3)
+    inter_m = generate_interaction_matrix(n_motives=8, mean=0, sd=0.1)
     sat_m = generate_satisfaction_matrix(n_motives=8, mean=0.2, sd=0.3)
     print("Generated Interaction Matrix:")
     print(inter_m.round(3))
