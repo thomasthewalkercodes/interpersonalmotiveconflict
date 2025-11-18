@@ -14,8 +14,7 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
     }
 
     active_behavior = None
-    decay_matrix = decay_rate  # decay_rate is already a DataFrame from the caller
-
+    decay_matrix = decay_rate
     for step in range(steps):
         # Get current satisfaction levels
         satisfaction_levels = sat_m.loc["satisfaction"]
