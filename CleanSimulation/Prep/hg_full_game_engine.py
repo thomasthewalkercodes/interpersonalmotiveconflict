@@ -12,7 +12,6 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
         "satisfaction": [],
         "unsatisfied_octants": [],
     }
-
     active_behavior = None
     decay_matrix = decay_rate
     for step in range(steps):
