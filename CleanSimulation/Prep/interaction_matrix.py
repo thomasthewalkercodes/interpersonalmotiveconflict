@@ -103,7 +103,7 @@ class GenerateInteractionMatrix:
                     # Calculate circular distance between motives
                     distance = min(abs(i - j), n_motives - abs(i - j))
                     # Apply angular displacement to rotate the peak to start_motive
-                    angular_displacement = -(start_motive - 1) * (2 * np.pi / n_motives)
+                    angular_displacement = (start_motive - 1) * (2 * np.pi / n_motives)
                     angle = distance * (2 * np.pi / n_motives) + angular_displacement
                     matrix[i, j] = amplitude * np.cos(angle) + elevation
 
