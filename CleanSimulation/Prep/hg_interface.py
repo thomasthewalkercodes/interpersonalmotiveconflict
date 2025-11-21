@@ -22,15 +22,17 @@ def run_single_simulation(steps):
     )"""
     inter_m = GenerateInteractionMatrix().borderline_int_matrix(
         n_motives=8,
-        start_motive=3,
+        start_motive=1,
+        amplitude_dict={3: 0.3, 7: 0.3},  # Custom amplitudes for motives 3 and 6
+        elevation_dict={3: 0.1, 7: 0.1},  # Custom elevations for motives 3 and 6
         base_amplitude=0.2,
-        conflict_amplitude=0.6,
         base_elevation=0.1,
-        conflict_elevation=0.0,
     )
-    decay_m = GenerateDecayMatrix().individual_decay_sin(
+    """decay_m = GenerateDecayMatrix().individual_decay_sin(
         start_motive=3, amplitude=0.01, elevation=0.02
-    )
+    )"""
+    decay_m = GenerateDecayMatrix().matrix_specific_decay(inter_m, decay_lambda=None)
+
     growth_rate = 1  # Fixed growth rate
     game_history = game_engine(sat_m, inter_m, steps, decay_m, growth_rate)
     return game_history, inter_m, sat_m, decay_m, growth_rate
@@ -89,5 +91,5 @@ def run_batch_simulations(n_simulations, steps, base_output_dir="batch_output"):
 
 
 histories = run_batch_simulations(
-    n_simulations=10, steps=500, base_output_dir="my_batch"
+    n_simulations=1, steps=500, base_output_dir="my_batch"
 )

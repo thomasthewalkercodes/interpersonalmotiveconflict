@@ -17,11 +17,15 @@ class GenerateDecayMatrix:
 
         # If no lambda provided, use equilibrium value
         if decay_lambda is None:
-            decay_lambda = lambda_eq
+            decay_lambda = lambda_eq / 8
 
         decay_lambda = round(decay_lambda, 3)
 
-        return {decay_lambda}
+        return pd.DataFrame(
+            [[decay_lambda] * n_motives],
+            columns=[f"motive_{i+1}" for i in range(n_motives)],
+            index=["decay_rate"],
+        )
 
     @staticmethod
     def individual_decay_sin(n_motives=8, start_motive=1, amplitude=0.1, elevation=0.2):

@@ -61,31 +61,41 @@ class GenerateInteractionMatrix:
     def borderline_int_matrix(
         n_motives=8,
         start_motive=1,
-        heightened_motives=(3, 7),
+        amplitude_dict=None,
+        elevation_dict=None,
         base_amplitude=0.2,
-        heightened_amplitude=0.6,
         base_elevation=0.1,
-        heightened_elevation=0.1,
     ):
-        """Generate circumplex matrix, then overwrite specific motives with different amplitude/elevation.
+        """Generate circumplex matrix with individual amplitude/elevation control for each motive.
 
-        First creates a standard circumplex matrix for all motives, then overwrites the rows
-        for heightened motives with a different sin wave (different amplitude and elevation).
+        Creates a circumplex matrix where you can specify different amplitude and elevation
+        for each motive individually. Motives not specified use the base values.
 
         Args:
             n_motives: Number of motives (default 8)
             start_motive: Which motive (1-indexed) should have the peak interaction (default 1)
-            heightened_motives: Tuple of motives (1-indexed) that should have different amplitude
-                               (default (3, 7))
-            base_amplitude: Amplitude for normal motives (default 0.2)
-            heightened_amplitude: Amplitude for heightened motives (default 0.6)
-            base_elevation: Baseline interaction level for normal motives (default 0.1)
-            heightened_elevation: Baseline interaction level for heightened motives (default 0.1)
+            amplitude_dict: Dictionary mapping motive number (1-indexed) to amplitude
+                           e.g., {3: 0.6, 7: 0.5} (default None)
+            elevation_dict: Dictionary mapping motive number (1-indexed) to elevation
+                           e.g., {3: -0.1, 7: 0.0} (default None)
+            base_amplitude: Default amplitude for motives not in amplitude_dict (default 0.2)
+            base_elevation: Default elevation for motives not in elevation_dict (default 0.1)
         """
+        if amplitude_dict is None:
+            amplitude_dict = {}
+        if elevation_dict is None:
+            elevation_dict = {}
+
         matrix = np.zeros((n_motives, n_motives))
 
-        # First, create the base circumplex matrix for ALL motives
+        # Create circumplex matrix with individual amplitude/elevation per motive
         for i in range(n_motives):
+            motive_num = i + 1  # Convert to 1-indexed
+
+            # Get amplitude and elevation for this motive
+            amplitude = amplitude_dict.get(motive_num, base_amplitude)
+            elevation = elevation_dict.get(motive_num, base_elevation)
+
             for j in range(n_motives):
                 if i == j:
                     matrix[i, j] = 0  # No self-influence
@@ -95,23 +105,7 @@ class GenerateInteractionMatrix:
                     # Apply angular displacement to rotate the peak to start_motive
                     angular_displacement = -(start_motive - 1) * (2 * np.pi / n_motives)
                     angle = distance * (2 * np.pi / n_motives) + angular_displacement
-                    matrix[i, j] = base_amplitude * np.cos(angle) + base_elevation
-
-        # Now overwrite the rows for heightened motives
-
-        for motive_num in heightened_motives:
-            i = motive_num  # Convert to 0-indexed
-            for j in range(n_motives):
-                if i == j:
-                    matrix[i, j] = 0  # No self-influence
-                else:
-                    # Calculate same circumplex pattern but with different amplitude/elevation
-                    distance = min(abs(i - j), n_motives - abs(i - j))
-                    angular_displacement = -(start_motive - 1) * (2 * np.pi / n_motives)
-                    angle = distance * (2 * np.pi / n_motives) + angular_displacement
-                    matrix[i, j] = (
-                        heightened_amplitude * np.cos(angle) + heightened_elevation
-                    )
+                    matrix[i, j] = amplitude * np.cos(angle) + elevation
 
         # Ensure symmetry
         matrix = (matrix + matrix.T) / 2
@@ -139,17 +133,18 @@ if __name__ == "__main__":
     print("Opposite motives (e.g., 1-5, 2-6) have lowest interaction values")
 
     print("\n" + "=" * 60)
-    print("\nBorderline Interaction Matrix (heightened motives 3 and 6):")
+    print("\nBorderline Interaction Matrix (custom amplitudes for motives 3 and 6):")
     borderline_matrix = generator.borderline_int_matrix(
         n_motives=8,
         start_motive=1,
-        heightened_motives=(1, 5),
+        amplitude_dict={3: 0.2, 6: 0.2},  # Custom amplitudes for motives 3 and 6
+        elevation_dict={3: 0.1, 6: 0.1},  # Custom elevations for motives 3 and 6
         base_amplitude=0.2,
-        heightened_amplitude=0.6,
         base_elevation=0.0,
-        heightened_elevation=-0.1,
     )
     print(borderline_matrix)
-    print("\nNote: Same circumplex pattern, but motives 3 and 6 have 3x amplitude")
-    print("Base motives: elevation=0.0, Heightened motives: elevation=-0.1")
-    print("Compare row 3 to row 1 - same pattern, bigger values, lower baseline")
+    print("\nNote: Each motive can have its own amplitude and elevation")
+    print("Motive 3: amplitude=0.6, elevation=-0.1")
+    print("Motive 6: amplitude=0.5, elevation=-0.05")
+    print("Others: amplitude=0.2, elevation=0.0")
+    print("Compare row 3 and row 6 - different amplitudes and baselines!")
