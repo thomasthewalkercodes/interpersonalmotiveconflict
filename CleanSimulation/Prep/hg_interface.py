@@ -17,11 +17,19 @@ def run_single_simulation(steps):
     sat_m = SatisfactonMatrixGenerator().normal_distribution_sat_matrix(
         n_motives=8, mean=0.2, sd=0.2
     )
-    inter_m = GenerateInteractionMatrix().circumplex_int_matrix(
+    """inter_m = GenerateInteractionMatrix().circumplex_int_matrix(
         n_motives=8, start_motive=1, amplitude=0.2, elevation=0.1
+    )"""
+    inter_m = GenerateInteractionMatrix().borderline_int_matrix(
+        n_motives=8,
+        start_motive=3,
+        base_amplitude=0.2,
+        conflict_amplitude=0.6,
+        base_elevation=0.1,
+        conflict_elevation=0.0,
     )
     decay_m = GenerateDecayMatrix().individual_decay_sin(
-        start_motive=1, amplitude=0.01, elevation=0.02
+        start_motive=3, amplitude=0.01, elevation=0.02
     )
     growth_rate = 1  # Fixed growth rate
     game_history = game_engine(sat_m, inter_m, steps, decay_m, growth_rate)
