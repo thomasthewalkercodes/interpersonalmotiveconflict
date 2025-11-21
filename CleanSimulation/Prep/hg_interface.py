@@ -23,9 +23,10 @@ def run_single_simulation(steps):
     inter_m = GenerateInteractionMatrix().borderline_int_matrix(
         n_motives=8,
         amplitude=0.2,
-        elevation=0.0,
+        elevation=0,
         custom_interactions={
-            # (3, 7): -0.3,  # High negative interaction between motive 3 and 7
+            (3, 7): -0.3,  # High negative interaction between motive 3 and 7
+            (1, 5): 0.3,
         },
     )
     decay_m = GenerateDecayMatrix().individual_decay_sin(
