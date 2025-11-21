@@ -21,7 +21,7 @@ def run_single_simulation(steps):
         n_motives=8, start_motive=1, amplitude=0.2, elevation=0.1
     )
     decay_m = GenerateDecayMatrix().individual_decay_sin(
-        start_motive=1, amplitude=0.1, elevation=0.02
+        start_motive=1, amplitude=0.01, elevation=0.02
     )
     growth_rate = 1  # Fixed growth rate
     game_history = game_engine(sat_m, inter_m, steps, decay_m, growth_rate)
@@ -29,8 +29,11 @@ def run_single_simulation(steps):
 
 
 def run_batch_simulations(n_simulations, steps, base_output_dir="batch_output"):
+    base_data_dir = Path(__file__).resolve().parents[1] / "data"
+    base_data_dir.mkdir(parents=True, exist_ok=True)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    batch_dir = Path(f"{base_output_dir}_{timestamp}")
+    batch_dir = base_data_dir / f"{base_output_dir}_{timestamp}"
     batch_dir.mkdir(parents=True, exist_ok=True)
 
     all_histories = []
@@ -52,22 +55,23 @@ def run_batch_simulations(n_simulations, steps, base_output_dir="batch_output"):
         )
 
         # Save behavior sequence
-        behavior_df = pd.DataFrame({
-            'step': history['step'],
-            'active_behavior': history['active_behavior']
-        })
+        behavior_df = pd.DataFrame(
+            {"step": history["step"], "active_behavior": history["active_behavior"]}
+        )
         behavior_df.to_csv(sim_folder / "behavior_sequence.csv", index=False)
 
         # Save satisfaction timeseries (wide format)
         sat_timeseries = []
-        for step_idx, sat_df in enumerate(history['satisfaction']):
-            row = {'step': history['step'][step_idx]}
+        for step_idx, sat_df in enumerate(history["satisfaction"]):
+            row = {"step": history["step"][step_idx]}
             for col in sat_df.columns:
-                row[col] = sat_df.loc['satisfaction', col]
+                row[col] = sat_df.loc["satisfaction", col]
             sat_timeseries.append(row)
 
         sat_timeseries_df = pd.DataFrame(sat_timeseries)
-        sat_timeseries_df.to_csv(sim_folder / "satisfaction_timeseries.csv", index=False)
+        sat_timeseries_df.to_csv(
+            sim_folder / "satisfaction_timeseries.csv", index=False
+        )
 
         all_histories.append(history)
         print(f"[OK] Saved simulation {sim_idx+1}/{n_simulations} to {sim_folder.name}")
@@ -77,5 +81,5 @@ def run_batch_simulations(n_simulations, steps, base_output_dir="batch_output"):
 
 
 histories = run_batch_simulations(
-    n_simulations=10, steps=50, base_output_dir="my_batch"
+    n_simulations=10, steps=500, base_output_dir="my_batch"
 )
