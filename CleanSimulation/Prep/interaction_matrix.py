@@ -61,41 +61,23 @@ class GenerateInteractionMatrix:
     def borderline_int_matrix(
         n_motives=8,
         start_motive=1,
-        amplitude_dict=None,
-        elevation_dict=None,
-        base_amplitude=0.2,
-        base_elevation=0.1,
+        amplitude=0.2,
+        elevation=0.1,
+        custom_interactions=None,
     ):
-        """Generate circumplex matrix with individual amplitude/elevation control for each motive.
-
-        Creates a circumplex matrix where you can specify different amplitude and elevation
-        for each motive individually. Motives not specified use the base values.
+        """Generate circumplex-based interaction matrix where the peak interaction is at the specified motive.
 
         Args:
-            n_motives: Number of motives (default 8)
-            start_motive: Which motive (1-indexed) should have the peak interaction (default 1)
-            amplitude_dict: Dictionary mapping motive number (1-indexed) to amplitude
-                           e.g., {3: 0.6, 7: 0.5} (default None)
-            elevation_dict: Dictionary mapping motive number (1-indexed) to elevation
-                           e.g., {3: -0.1, 7: 0.0} (default None)
-            base_amplitude: Default amplitude for motives not in amplitude_dict (default 0.2)
-            base_elevation: Default elevation for motives not in elevation_dict (default 0.1)
+            n_motives: Number of motives
+            start_motive: Which motive (1-indexed) should have the peak interaction for each row
+            amplitude: Range of interaction values
+            elevation: Baseline interaction level
+            custom_interactions: Dict {(i, j): value} or list [(i, j, value)] to override specific interactions
+                            Indices are 1-based. Automatically mirrors to maintain symmetry.
         """
-        if amplitude_dict is None:
-            amplitude_dict = {}
-        if elevation_dict is None:
-            elevation_dict = {}
-
         matrix = np.zeros((n_motives, n_motives))
 
-        # Create circumplex matrix with individual amplitude/elevation per motive
         for i in range(n_motives):
-            motive_num = i + 1  # Convert to 1-indexed
-
-            # Get amplitude and elevation for this motive
-            amplitude = amplitude_dict.get(motive_num, base_amplitude)
-            elevation = elevation_dict.get(motive_num, base_elevation)
-
             for j in range(n_motives):
                 if i == j:
                     matrix[i, j] = 0  # No self-influence
@@ -103,12 +85,24 @@ class GenerateInteractionMatrix:
                     # Calculate circular distance between motives
                     distance = min(abs(i - j), n_motives - abs(i - j))
                     # Apply angular displacement to rotate the peak to start_motive
-                    angular_displacement = (start_motive - 1) * (2 * np.pi / n_motives)
+                    angular_displacement = -(start_motive - 1) * (2 * np.pi / n_motives)
                     angle = distance * (2 * np.pi / n_motives) + angular_displacement
                     matrix[i, j] = amplitude * np.cos(angle) + elevation
 
         # Ensure symmetry
         matrix = (matrix + matrix.T) / 2
+
+        # Apply custom interactions (overrides circumplex values)
+        if custom_interactions is not None:
+            if isinstance(custom_interactions, dict):
+                items = custom_interactions.items()
+            else:
+                items = [((i, j), val) for i, j, val in custom_interactions]
+
+            for (i, j), value in items:
+                matrix[i - 1, j - 1] = value  # Convert to 0-based indexing
+                matrix[j - 1, i - 1] = value  # Mirror for symmetry
+
         # Round to 3 decimal places
         matrix = np.round(matrix, 3)
 
@@ -133,18 +127,18 @@ if __name__ == "__main__":
     print("Opposite motives (e.g., 1-5, 2-6) have lowest interaction values")
 
     print("\n" + "=" * 60)
-    print("\nBorderline Interaction Matrix (custom amplitudes for motives 3 and 6):")
+    print("\nBorderline Interaction Matrix (custom interactions):")
     borderline_matrix = generator.borderline_int_matrix(
         n_motives=8,
-        start_motive=1,
-        amplitude_dict={3: 0.2, 6: 0.2},  # Custom amplitudes for motives 3 and 6
-        elevation_dict={3: 0.1, 6: 0.1},  # Custom elevations for motives 3 and 6
-        base_amplitude=0.2,
-        base_elevation=0.0,
+        amplitude=0.2,
+        elevation=0.0,
+        custom_interactions={
+            (3, 6): 0.8,  # High positive interaction between motive 3 and 6
+            (3, 7): -0.5,  # High negative interaction between motive 3 and 7
+        },
     )
     print(borderline_matrix)
-    print("\nNote: Each motive can have its own amplitude and elevation")
-    print("Motive 3: amplitude=0.6, elevation=-0.1")
-    print("Motive 6: amplitude=0.5, elevation=-0.05")
-    print("Others: amplitude=0.2, elevation=0.0")
-    print("Compare row 3 and row 6 - different amplitudes and baselines!")
+    print("\nNote: Custom interactions override circumplex values")
+    print("Interaction (3,6) set to 0.8 (high positive)")
+    print("Interaction (3,7) set to -0.5 (high negative)")
+    print("All other interactions follow the circumplex pattern")
