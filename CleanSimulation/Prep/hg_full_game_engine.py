@@ -45,6 +45,8 @@ def game_engine(sat_m, inter_m, steps, decay_rate, growth_rate=1):
                 sat_m.loc["satisfaction", octant] -= decay_rate
         # Clip all satisfaction values to be within the range [-1, 1]
         sat_m.loc["satisfaction"] = np.clip(sat_m.loc["satisfaction"], -1, 1)
+        # Round to 5 decimal places to avoid floating point precision issues
+        sat_m.loc["satisfaction"] = np.round(sat_m.loc["satisfaction"], 5)
 
         # Record history (after all updates)
         history["step"].append(step)

@@ -18,3 +18,10 @@ class SatisfactonMatrixGenerator:
             index=["satisfaction"],
         )
         return sat_m
+
+
+if __name__ == "__main__":
+    generator = SatisfactonMatrixGenerator()
+    sat_m = generator.normal_distribution_sat_matrix(n_motives=8, mean=0.3, sd=0.5)
+    print("Generated Satisfaction Matrix:")
+    print(sat_m)
