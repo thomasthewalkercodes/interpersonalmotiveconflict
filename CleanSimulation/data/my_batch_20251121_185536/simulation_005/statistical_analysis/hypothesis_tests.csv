@@ -1,0 +1,4 @@
+test_name,statistic,p_value,critical_value,significant,interpretation
+Chi-Square Uniformity Test,26.22222222222222,0.000459627629742987,,True,Reject uniform distribution
+Shapiro-Wilk Normality Test,0.9562222521525224,0.773445044289869,,False,Cannot reject normality
+Anderson-Darling Normality Test,0.20219510372250404,,0.709,False,Cannot reject normality
