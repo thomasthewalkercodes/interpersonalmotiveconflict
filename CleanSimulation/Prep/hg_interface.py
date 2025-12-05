@@ -22,15 +22,15 @@ def run_single_simulation(steps):
     )"""
     inter_m = GenerateInteractionMatrix().borderline_int_matrix(
         n_motives=8,
-        amplitude=0.2,
-        elevation=0,
+        amplitude=0.1,
+        elevation=0.2,
         custom_interactions={
             # (3, 7): -0.3,  # High negative interaction between motive 3 and 7
             # (1, 5): 0.3,
         },
     )
     decay_m = GenerateDecayMatrix().individual_decay_sin(
-        start_motive=3, amplitude=0.01, elevation=0.02
+        start_motive=3, amplitude=0.02, elevation=0.02
     )
 
     """
@@ -94,5 +94,5 @@ def run_batch_simulations(n_simulations, steps, base_output_dir="batch_output"):
 
 
 histories = run_batch_simulations(
-    n_simulations=30, steps=3000, base_output_dir="my_batch"
+    n_simulations=1, steps=1000, base_output_dir="my_batch"
 )
